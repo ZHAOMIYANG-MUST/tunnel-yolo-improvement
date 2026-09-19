@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="UWCVcNHzMBxpLV3vYrE7kR">
+<head data-page-node-id="GlREcOhUkQp9cNDxyZh6r0">
+<meta charset="UTF-8" data-page-node-id="eZsU8NDoUJDX41kJOhcmBe">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="lSTOxplSD5Z3vg65T1rNwC">
+<title>隧道病害检测调研报告 · 通俗版</title>
+<style>
+  :root{
+    --ink:#1f2430; --muted:#5c6470; --line:#e3e6ec;
+    --bg:#f7f8fa; --card:#ffffff;
+    --blue:#185FA5; --blue-bg:#E6F1FB;
+    --teal:#0F6E56; --teal-bg:#E1F5EE;
+    --amber:#854F0B; --amber-bg:#FAEEDA;
+    --coral:#993C1D; --coral-bg:#FAECE7;
+    --purple:#534AB7; --purple-bg:#EEEDFE;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.75;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px 80px;}
+
+  header{background:var(--card);border-bottom:1px solid var(--line);padding:56px 24px 40px;text-align:center;}
+  header .kicker{display:inline-block;font-size:13px;letter-spacing:.2em;color:var(--blue);background:var(--blue-bg);padding:4px 14px;border-radius:999px;margin-bottom:18px;}
+  header h1{font-size:30px;font-weight:600;letter-spacing:.02em;}
+  header p.sub{color:var(--muted);margin-top:12px;font-size:15px;}
+
+  .toc{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px;}
+  .toc a{font-size:13px;color:var(--blue);text-decoration:none;background:var(--blue-bg);padding:6px 14px;border-radius:999px;}
+
+  section{margin-top:56px;}
+  .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:8px;}
+  .sec-num{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600;color:#fff;flex-shrink:0;}
+  .sec-head h2{font-size:22px;font-weight:600;}
+  .sec-intro{color:var(--muted);font-size:14.5px;margin:4px 0 22px 58px;max-width:700px;}
+
+  .grid{display:grid;gap:14px;}
+  .grid.two{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+  .grid.four{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;}
+  .card h3{font-size:15.5px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .card p{font-size:13.5px;color:var(--muted);}
+  .tag{font-size:11px;padding:2px 8px;border-radius:999px;font-weight:500;flex-shrink:0;}
+
+  .pain-card{border-left:4px solid var(--coral);}
+  .why-card{border-left:4px solid var(--amber);}
+  .fix-card{border-left:4px solid var(--teal);}
+
+  .stat-row{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 6px;}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;flex:1;min-width:180px;text-align:center;}
+  .stat .num{font-size:26px;font-weight:600;color:var(--coral);}
+  .stat .lbl{font-size:12.5px;color:var(--muted);margin-top:4px;}
+
+  figure{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0;}
+  figcaption{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px;}
+  svg text{font-family:"PingFang SC","Microsoft YaHei",sans-serif;}
+
+  .flow{display:flex;flex-direction:column;gap:0;}
+  .flow-item{display:flex;gap:16px;position:relative;padding-bottom:26px;}
+  .flow-item:last-child{padding-bottom:0;}
+  .flow-item::before{content:"";position:absolute;left:17px;top:38px;bottom:0;width:2px;background:var(--line);}
+  .flow-item:last-child::before{display:none;}
+  .flow-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;flex-shrink:0;z-index:1;}
+  .flow-body{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;flex:1;}
+  .flow-body h3{font-size:15px;font-weight:600;}
+  .flow-body .when{font-size:12px;color:var(--muted);margin-left:8px;}
+  .flow-body p{font-size:13.5px;color:var(--muted);margin-top:6px;}
+
+  .map-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--line);font-size:13.5px;}
+  .map-table th{background:#eef1f5;text-align:left;padding:12px 16px;font-weight:600;font-size:13px;}
+  .map-table td{padding:13px 16px;border-top:1px solid var(--line);vertical-align:top;}
+  .map-table td:first-child{color:var(--coral);font-weight:500;}
+  .map-table td:nth-child(2){color:var(--teal);font-weight:500;}
+
+  .note{background:var(--purple-bg);border:1px solid #d8d5f3;border-radius:14px;padding:18px 22px;font-size:13.5px;color:#3c3489;margin-top:16px;}
+  .note b{font-weight:600;}
+  footer{margin-top:70px;padding-top:24px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center;}
+  sup.cite{font-size:11px;color:var(--blue);}
+  .refs{margin-top:70px;padding-top:26px;border-top:1px solid var(--line);}
+  .refs h2{font-size:17px;font-weight:600;margin-bottom:14px;}
+  .refs ol{padding-left:22px;font-size:12.5px;color:var(--muted);}
+  .refs li{margin-bottom:9px;}
+  .refs .doi{color:var(--blue);word-break:break-all;}
+  .refs .note-sm{font-size:12px;margin-top:14px;color:var(--muted);}
+</style>
+</head>
+<body data-page-node-id="8MQZgsxgVWnmptSG6NUPJq">
+
+<header data-page-node-id="pG39rw5OBFGaP5dYnPZ3c7">
+  <div class="kicker" data-page-node-id="eJRrhV195UBJQ5VzxDS8qs">毕业设计调研 · 通俗版</div>
+  <h1 data-page-node-id="mPhkOQvBOW8fiEkbuGESAG">隧道病害检测调研：问题、原因、改进与计划</h1>
+  <p class="sub" data-page-node-id="0Wbt2D1N0vAxnIKfYnkjI7">基于改进 YOLOv8 的隧道衬砌病害检测</p>
+  <nav class="toc" data-page-node-id="vcVWUx3kSeUFICDEUtSmFv">
+    <a href="#q1" data-page-node-id="FeMAaQBrCDsgtu0bLmul8E">① 有什么问题？</a>
+    <a href="#q2" data-page-node-id="KHqRI6ujon45EKCDEnFXQn">② 为什么有这些问题？</a>
+    <a href="#q3" data-page-node-id="EnXzmOMJA2W8zS9WxOF3o5">③ 怎么改进？</a>
+    <a href="#q4" data-page-node-id="1VIcWxASGSZTACJ3kyIFI8">④ 接下来怎么做？</a>
+  </nav>
+</header>
+
+<div class="wrap" data-page-node-id="3xLq1ql0esIqHQTEUjFMT4">
+
+<!-- ============ Q1 ============ -->
+<section id="q1" data-page-node-id="ox8UZ96XEReLCR2IaBuRDG">
+  <div class="sec-head" data-page-node-id="3cGaFsg74JOucD1J673HqA">
+    <div class="sec-num" style="background:var(--coral);" data-page-node-id="fOCsH68HfZJR7KLWWcxEzo">1</div>
+    <h2 data-page-node-id="EfDi3tPh9cKYwG7UVYPsCt">有什么问题？</h2>
+  </div>
+  <p class="sec-intro" data-page-node-id="3IKtvSAFWgcauXbMuLCgJS">问题分两层：第一层是"为什么不用人工巡检"——老办法跟不上需求；第二层是"为什么不能直接拿现成 AI 来用"——通用模型在隧道里直接用效果不好。</p>
+
+  <div class="stat-row" data-page-node-id="mpdinxqVJK6LhWFE9jaRwp">
+    <div class="stat" data-page-node-id="fx55Vq9Fj4DKiEwgU2ZQhU"><div class="num" data-page-node-id="CXAgIXKI7Gosj7Gx2U76hC">80%</div><div class="lbl" data-page-node-id="peD8czHCySsuk93QrIblic">我国运营超十年的隧道存在裂缝渗漏 <sup class="cite">[1]</sup></div></div>
+    <div class="stat" data-page-node-id="dNFnSLiRq9ynbFS1XGVSN2"><div class="num" data-page-node-id="7MWphWHX2mQ8LOkQD7tUm5">&lt;70%</div><div class="lbl" data-page-node-id="KxaMjsisZyqRgYFdfmnNNh">传统图像法在复杂工况下的识别精度 <sup class="cite">[2]</sup></div></div>
+    <div class="stat" data-page-node-id="XbyXNnNGx9GluzadH89sc5"><div class="num" data-page-node-id="EVUMhjGTuQnmbFgaZP0pFf">3 类</div><div class="lbl" data-page-node-id="BJUoqzmv89kdduGxSpG4r7">本课题目标病害：渗漏水 / 裂缝 / 剥落</div></div>
+  </div>
+
+  <div class="grid two" style="margin-top:18px;" data-page-node-id="v5dPBeDb0VXGkIzFRKYRas">
+    <div class="card" data-page-node-id="HcClnABRpxWOogfknqPjsF">
+      <h3 data-page-node-id="OHjmm6pFZ1628UciUBAAps">老办法的问题：人工巡检</h3>
+      <p data-page-node-id="P7UVR8u8Lm6bfb9XfbhaAy">效率低、成本高，巡检人员要暴露在低能见度、潮湿、粉尘甚至有毒气体环境里；结果全凭个人经验，漏检多、难量化、难追溯。</p>
+    </div>
+    <div class="card" data-page-node-id="TElZR3Q0AOB2Mw6tARVUvx">
+      <h3 data-page-node-id="Dh4WcZekFnBoEuoJPdhwzD">新办法的门槛：现成模型直接用效果不好</h3>
+      <p data-page-node-id="mbtKapkPIcRAlgPGDb1nmJ">YOLO 这类通用检测模型在普通场景很好用，但直接搬到隧道里，会出现<b data-page-node-id="Fi8fDB4jlyuS7V1elSYBW2">漏检、误检</b>——下面四个痛点就是具体表现。</p>
+    </div>
+  </div>
+
+  <div class="grid four" style="margin-top:14px;" data-page-node-id="4CyY0fEaoCRLcpByHJkYBW">
+    <div class="card pain-card" data-page-node-id="BLWUtWmlN97rfy08pOGqGC">
+      <h3 data-page-node-id="lWzclXzxqytBs0S918yFJl">小 <span class="tag" style="background:var(--coral-bg);color:var(--coral);" data-page-node-id="PGQRhebJNF6Qul0SLBCVVE">漏检</span></h3>
+      <p data-page-node-id="eLWU25v7uGUlWrPZBKn2ke">裂缝宽度可能只有几个像素，在图里占的面积极小，模型经常"看不见"。</p>
+    </div>
+    <div class="card pain-card" data-page-node-id="vsDCjrH7nd2Sr1PwZ5bKem">
+      <h3 data-page-node-id="4q9P8pBjSb62kR5Ch8MHue">暗 <span class="tag" style="background:var(--coral-bg);color:var(--coral);" data-page-node-id="aYnGgydKDKdsVtOfuY7Zqq">误检</span></h3>
+      <p data-page-node-id="HdMuckot8NX7KeWVijk7xN">隧道内光照不均、阴影多，电缆、手孔、接缝这些背景东西长得跟病害很像。</p>
+    </div>
+    <div class="card pain-card" data-page-node-id="9onoNAejyP1D4XAGKg2LH1">
+      <h3 data-page-node-id="CwLtjG60YjtCe0Jo3hWuTP">怪 <span class="tag" style="background:var(--coral-bg);color:var(--coral);" data-page-node-id="8WoRZ581FbKl57952wbMsX">框不准</span></h3>
+      <p data-page-node-id="7FWpnPQkqxzKvqVup1neF2">渗漏水的形状毫无规律、边缘模糊，画出来的框总是不太贴。</p>
+    </div>
+    <div class="card pain-card" data-page-node-id="gcG8rkcamA9MCZ6RL54XtN">
+      <h3 data-page-node-id="jCao6lDXHnSRkAqQFLTYrg">偏 <span class="tag" style="background:var(--coral-bg);color:var(--coral);" data-page-node-id="NdpxA5csuauw9P6OOUHEA5">偏科</span></h3>
+      <p data-page-node-id="PDZJ7SdAb3pNDEvnLpphds">数据集里渗漏水样本很多、裂缝样本很少，模型变成"偏科生"，裂缝类精度差。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Q2 ============ -->
+<section id="q2" data-page-node-id="CvxK4iHfcoBncBa8f1rMLn">
+  <div class="sec-head" data-page-node-id="V1KAltif2IFVPUfhT4qLgI">
+    <div class="sec-num" style="background:var(--amber);" data-page-node-id="JGrvqiUxBxzY92onYgmqZ1">2</div>
+    <h2 data-page-node-id="r9iO6mtYHEBgUhgnZ1cx4K">为什么有这些问题？</h2>
+  </div>
+  <p class="sec-intro" data-page-node-id="FnqK2BEHEU05SAKwrBojcr">四个痛点不是模型"不够努力"，而是有明确的技术根源。逐个拆开看：</p>
+
+  <div class="grid two" data-page-node-id="Cws6SJv9MzBm1Gigazbk9o">
+    <div class="card why-card" data-page-node-id="5g2Zosoxu57DFif3WhAxpH">
+      <h3 data-page-node-id="QPPeuCYKqs21WPsbU4xBuh">小 → 网络下采样把小目标"压没了"</h3>
+      <p data-page-node-id="Dje6pExh7Gqzuo8wQfZH3D">YOLO 为了看得远、算得快，会把图像一层层缩小（640px 逐级降到 20px）。一个大裂缝缩 32 倍还剩点痕迹，一条 2 像素宽的细裂缝缩完就什么都不剩了——不是没检测到，是特征在缩小过程中彻底丢失。清华 LADDNet 的统计证实：隧道病害框的宽高大多集中在归一化尺寸的 0.2 以下，是教科书级的小目标场景 <sup class="cite">[3]</sup>。</p>
+    </div>
+    <div class="card why-card" data-page-node-id="nGFXLOLx4iLntAUnFJVYRO">
+      <h3 data-page-node-id="NIy8Pk8glwnfQII7dxG1w2">暗 → 卷积只看"长什么样"，不看"在哪"</h3>
+      <p data-page-node-id="slmmGbi4Yq5dmeSwe38wy7">普通卷积对整张图一视同仁。隧道里电缆是直的、手孔是方的，它们在纹理上和裂缝、剥落有相似之处。模型分不清"哪里重要、哪里是背景"，把电缆误判成裂缝就顺理成章。这需要模型学会<b data-page-node-id="bDND4Bdk8OAWHzCgjR2bYL">选择性关注</b>——这正是注意力机制要解决的问题。</p>
+    </div>
+    <div class="card why-card" data-page-node-id="1Y1NHvGNrERFUDjVh43NKi">
+      <h3 data-page-node-id="mJ6oIKg8y5IlagzkolUfPr">怪 → 回归损失天生偏爱"方框"</h3>
+      <p data-page-node-id="vZbVyVUfpPKCaf6LGmCeES">YOLO 训练时用 IoU 类损失来学习"框画得准不准"，但标准 CIoU 对普通方框友好，对渗漏水这种"一摊水渍、边缘晕开"的不规则目标很迟钝——损失值差不多了，框还是歪的。用 MPDIoU 等改进损失的论文正说明：换更合适的"量尺"，框自然更准 <sup class="cite">[5]</sup>。</p>
+    </div>
+    <div class="card why-card" data-page-node-id="IO8jh4QGweKalnAnE9AJ1C">
+      <h3 data-page-node-id="duqdCKAOsQu9CeWJOMfg7o">偏 → 数据天然长不匀</h3>
+      <p data-page-node-id="evdCxKNpSoJa2qYNz4qT7K">公开数据集里渗漏水往往有 2700+ 个标注框，裂缝只有 800 个左右 <sup class="cite">[4]</sup>。训练时模型见渗水见得多，自然学得好；裂缝见得少，学得差。这不是模型的问题，是"教材"分配不均的问题。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Q3 ============ -->
+<section id="q3" data-page-node-id="4HeRG7IWJ8ZSGnHUDpHHg2">
+  <div class="sec-head" data-page-node-id="jfHDlEEQ9PW51wHwyK9OYe">
+    <div class="sec-num" style="background:var(--teal);" data-page-node-id="ppvnzlRz1yS2poisAbxJLv">3</div>
+    <h2 data-page-node-id="zLIuHUGDSOi951FnFDSJHE">这些问题怎么改进？</h2>
+  </div>
+  <p class="sec-intro" data-page-node-id="GZCzFDyGgLA5EdTGGUqTIi">一个痛点配一个改进，每个改进都有已发表的文献支撑（标注见文末参考文献）。</p>
+
+  <table class="map-table" data-page-node-id="ApCyaxbjKWftLV4SU76p5I">
+    <tr data-page-node-id="CjV9sWYkv6Y3CGJnL5LguL"><th style="width:30%;" data-page-node-id="OVvCVN8g443eXb9zdSj7RC">痛点</th><th style="width:28%;" data-page-node-id="a3ahBNsN4ixmnujKmDnBoM">改进手段</th><th data-page-node-id="CvK7OeVxGHlQ6DPN6sN9WC">原理一句话</th></tr>
+    <tr data-page-node-id="gC673uTJeW3QsBHZrIgE8d">
+      <td data-page-node-id="mYf4OEGJZvKiB8LZdNOFAI">小 · 小目标漏检</td>
+      <td data-page-node-id="jfLuUfuO2RE0XfzY72xjGt">增加 P2 小目标检测层</td>
+      <td data-page-node-id="dJsfTznLEPNIf13HlRKzxN">在模型只"缩小 4 倍"的早期特征图上多开一个检测出口，细裂缝在这里还没被压没，召回率直接提升</td>
+    </tr>
+    <tr data-page-node-id="Bmp1nVtzdrBa4kM8cejzgn">
+      <td data-page-node-id="sJV6OWl46zrH1oinBdZPmV">暗 · 背景误检</td>
+      <td data-page-node-id="sEs8QQyqA6yl6BAFz82RB3">引入注意力机制<br data-page-node-id="84I3VyyBtTXAY1l0tGoEdi">（CBAM / SimAM）</td>
+      <td data-page-node-id="R6OA04RNEjqjaqYcRnamCY">给模型装上"聚光灯"，自动压低电缆、接缝等背景区域的权重，把算力集中在疑似病害区域</td>
+    </tr>
+    <tr data-page-node-id="Qq7FfDLnHVHC0BUWHZoAJg">
+      <td data-page-node-id="IpGDUSBa4ySsjQgID7jhev">怪 · 边框不准</td>
+      <td data-page-node-id="zkquIhw0eD4gXIxCCmW2Ax">替换回归损失<br data-page-node-id="rlNfxjmCKGrzZ1jINP9E9N">（WIoU / Shape-IoU）</td>
+      <td data-page-node-id="r6N5dc6sefGTrrQ6jfcHBJ">换一把对"细长、不规则"敏感的量尺来衡量框的质量，模型学会贴合病害的真实轮廓。这是本课题的自设计核心创新点</td>
+    </tr>
+    <tr data-page-node-id="Q1hdAhEqDiP3miC6LidHTo">
+      <td data-page-node-id="rORCqO5GFMDkpIKSDXp92U">偏 · 类别不均衡</td>
+      <td data-page-node-id="VASjBC3YyqLZtzzC9BWIxE">数据增强 + 损失加权</td>
+      <td data-page-node-id="6xoTvfKRXIzGj3MS5uMngk">对稀缺的裂缝样本做旋转、亮度、Mosaic 增强补充数量，训练时再对小类损失加权，缓解类别不均衡</td>
+    </tr>
+  </table>
+
+  <figure data-page-node-id="GLdFCZSZx8WJ3BBL4HASDm">
+    <svg viewBox="0 0 680 190" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" data-page-node-id="7zLSz3gxgXMxybnePo3hjP">
+      <defs data-page-node-id="xi80HuruFY8PTfJ4LhHslv">
+        <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" data-page-node-id="8sZVNJ80gYrfmik3INn4YN">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="P98tfDTezKM5tsGl8PYhE2"/>
+        </marker>
+      </defs>
+      <rect x="40" y="50" width="150" height="88" rx="10" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5" data-page-node-id="MJovV0L6MxX5EjRwpvYrgg"/>
+      <text x="115" y="78" text-anchor="middle" font-size="14" font-weight="600" fill="#712B13" data-page-node-id="7AO81Gn4TDEPxaS8Luh4Mv">输入隧道图像</text>
+      <text x="115" y="100" text-anchor="middle" font-size="11.5" fill="#993C1D" data-page-node-id="XIhIHb3fyFYaDnqYpku3Kw">小 · 暗 · 怪 · 偏</text>
+      <text x="115" y="118" text-anchor="middle" font-size="11.5" fill="#993C1D" data-page-node-id="pQDR0LQeUM8A50mO2T5QEU">四大痛点</text>
+
+      <path d="M190 94 L230 94" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#ar)" data-page-node-id="KApgQLlWt54Qx3SHjxppvQ"/>
+
+      <rect x="236" y="20" width="180" height="52" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5" data-page-node-id="DB6VmzUD0ZkgVk7o6Rs0LJ"/>
+      <text x="326" y="40" text-anchor="middle" font-size="12.5" font-weight="600" fill="#085041" data-page-node-id="aTShfnEEVrcUPNKrN2NAOV">P2 小目标检测层</text>
+      <text x="326" y="58" text-anchor="middle" font-size="11" fill="#0F6E56" data-page-node-id="XycJ4CLtwmHyjjIH7sFtJE">治"小"：细裂缝不再丢失</text>
+
+      <rect x="236" y="116" width="180" height="52" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5" data-page-node-id="0StXHzHUpNK2udWgb6c0IY"/>
+      <text x="326" y="136" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0C447C" data-page-node-id="HDpKmPfAP4mizxui6sxb87">CBAM / SimAM 注意力</text>
+      <text x="326" y="154" text-anchor="middle" font-size="11" fill="#185FA5" data-page-node-id="n1lCZgxZ76ygXwLn4c7oi1">治"暗"：压低背景干扰</text>
+
+      <path d="M416 46 L456 46" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#ar)" data-page-node-id="gHF2jArBjZLTcXUYAHBAA0"/>
+      <path d="M416 142 L456 142" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#ar)" data-page-node-id="5S51dEnGXh3FW9JdcXTKAi"/>
+
+      <rect x="462" y="20" width="178" height="52" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5" data-page-node-id="SzBVkvsjJMFQv0KCDitpzr"/>
+      <text x="551" y="40" text-anchor="middle" font-size="12.5" font-weight="600" fill="#633806" data-page-node-id="Z1KmnrEoDNFIgHHvqR4nKw">WIoU / Shape-IoU 损失</text>
+      <text x="551" y="58" text-anchor="middle" font-size="11" fill="#854F0B" data-page-node-id="UI5rm2azDGWoN1NZBzxrkF">治"怪"：边框贴合轮廓</text>
+
+      <rect x="462" y="116" width="178" height="52" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5" data-page-node-id="zcGBEi6XEXou98ybLR96jE"/>
+      <text x="551" y="136" text-anchor="middle" font-size="12.5" font-weight="600" fill="#3C3489" data-page-node-id="ov5UjBt8PXFOpXAijcDm3N">增强 + 损失加权</text>
+      <text x="551" y="154" text-anchor="middle" font-size="11" fill="#534AB7" data-page-node-id="NWnk5hlbD10LFPBljgDTAv">治"偏"：裂缝样本补齐</text>
+
+      <path d="M551 72 L551 92" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-dasharray="3 3" data-page-node-id="PH9rGRuMKqV2jmp8is7sFy"/>
+      <text x="590" y="85" text-anchor="middle" font-size="11" fill="#5F5E5A" data-page-node-id="kpSDH1Vg3cGIongcal6jNy">叠加</text>
+      <text x="340" y="185" text-anchor="middle" font-size="11.5" fill="#5F5E5A" data-page-node-id="K9cY8FnyDkFfB0wZrSNUU7">四个改进互相独立、可逐个叠加验证 —— 这就是消融实验的逻辑</text>
+    </svg>
+    <figcaption data-page-node-id="fsFBgSwLBVncR3cs5OWdtY">改进方案全景：四个痛点、四个对策，逐一叠加验证</figcaption>
+  </figure>
+
+  <div class="note" data-page-node-id="8UZiqmEmZ6Yvxzd32n5UaV">
+    <b data-page-node-id="ut9BlgkjthIUX1KwPF126x">为什么这个组合适合毕业设计？</b>① 每个改进都有顶刊/核心期刊文献支撑，站得住；② 损失函数改进是"自设计"性质，体现算法创新（AI 专业的答辩重点）；③ 改进彼此独立，可以用消融实验清晰量化每一步的贡献，实验好做、论文好写、答辩好讲。
+  </div>
+</section>
+
+<!-- ============ Q4 ============ -->
+<section id="q4" data-page-node-id="zxk2QFFq2xeJcfAFb8YAAR">
+  <div class="sec-head" data-page-node-id="PmldSMxzrvdwWXcEHo7b4Q">
+    <div class="sec-num" style="background:var(--purple);" data-page-node-id="Lpnb9XMdcLntpXGgHeK4pv">4</div>
+    <h2 data-page-node-id="mFKwfmDFtxnz7LTTfxHR9G">接下来大概会怎么做？</h2>
+  </div>
+  <p class="sec-intro" data-page-node-id="bdoJ7a5okmESW50y6n61Nt">按 16 周一学期规划，六步走。每一步都有明确产出，避免"做了很多但没有可写的东西"。</p>
+
+  <div class="flow" data-page-node-id="RH2tV8yAl6QUsSpAGjFeQz">
+    <div class="flow-item" data-page-node-id="GAIGRd557017wZx6cB6Jw6">
+      <div class="flow-dot" style="background:var(--blue);" data-page-node-id="XCEYwQ5j60azuLPAfoDRPh">1</div>
+      <div class="flow-body" data-page-node-id="IorMeuHhLvFLdHGfBIrneb">
+        <h3 data-page-node-id="I5uEmwNZIu5WCIdbv2whWI">基线复现 <span class="when" data-page-node-id="bdKrHsAlT69wjFgDACodTS">第 1-2 周</span></h3>
+        <p data-page-node-id="NZkoyETBRBHe13kFR3XCA8">搭好 PyTorch + Ultralytics 环境，用公开的隧道墙壁缺陷数据集（3231 张，三类病害）训练原版 YOLOv8n，记录 Precision / Recall / mAP / 参数量 / FPS，作为改进前的基准成绩。</p>
+      </div>
+    </div>
+    <div class="flow-item" data-page-node-id="YY59mgxEaDIOL82YA8k2vY">
+      <div class="flow-dot" style="background:var(--teal);" data-page-node-id="olTedBo1QK9WA6xSFM6fem">2</div>
+      <div class="flow-body" data-page-node-id="539hphDW37NpnPbBQCDtO8">
+        <h3 data-page-node-id="E0wEIbq9GzEWu1GpzkERmk">数据准备与分析 <span class="when" data-page-node-id="9yYVClB36KzEo30xQM2Czu">与第 1 步并行</span></h3>
+        <p data-page-node-id="UlFrFo4pLV4kgBxk0gegjS">清洗、按 8:1:1 划分数据集，统计每类框数量与尺寸分布——画出"小目标、类别不均衡"的统计图，作为后续改进的动机依据，直接进论文。</p>
+      </div>
+    </div>
+    <div class="flow-item" data-page-node-id="lrCoVrgnIiKnVnXcCrAFd9">
+      <div class="flow-dot" style="background:var(--amber);" data-page-node-id="1IyZ6rErId7gkZu0d2lSDr">3</div>
+      <div class="flow-body" data-page-node-id="z0lxFmMT9yRlv4jNU37q4A">
+        <h3 data-page-node-id="7xF8pOwT1r4RquIndzGJ0m">逐个加入改进 <span class="when" data-page-node-id="BBBCSluc9QiOUJZYjOtbjm">第 3-7 周</span></h3>
+        <p data-page-node-id="sDoHZsK9gnWd8LMMebPrUv">一次只改一个变量：基线 → +注意力 → +P2 层 → +损失函数。每步固定随机种子、相同训练配置，保证涨点是改进带来的而不是运气。</p>
+      </div>
+    </div>
+    <div class="flow-item" data-page-node-id="qYD9nrO7VVABkRpD5OFBB8">
+      <div class="flow-dot" style="background:var(--coral);" data-page-node-id="p3P0jWCio7gX9FWaZFkfBf">4</div>
+      <div class="flow-body" data-page-node-id="zW2J2doInb5KszMMgBGyFn">
+        <h3 data-page-node-id="zdvtPEi0mcyB5i7DdS9H6B">完整实验 <span class="when" data-page-node-id="cDD0FNjs099UNucFQNcBtR">第 8-10 周</span></h3>
+        <p data-page-node-id="cVAbicJu77Mrg6cKnkeFjF">消融实验表（每个改进贡献多少）+ 对比实验表（和 YOLOv5、Faster R-CNN 等比）+ 可视化（Grad-CAM 热力图证明注意力真的在看病害区域、检测对比图展示漏检被修复）。</p>
+      </div>
+    </div>
+    <div class="flow-item" data-page-node-id="kah8GesxX2SpxUZQ1KAsV9">
+      <div class="flow-dot" style="background:var(--purple);" data-page-node-id="pSrZqhVBqNeYWbBbyWuqzF">5</div>
+      <div class="flow-body" data-page-node-id="8smSz6LLkXZ8DFL2pUvUSm">
+        <h3 data-page-node-id="yOekUdSdwyJCZ4d1g2xTtG">论文撰写 <span class="when" data-page-node-id="dtB0ce3LG7dACiWnO3m4P2">第 11-14 周</span></h3>
+        <p data-page-node-id="ney1Vx5p8EDfYDQr2ODP98">先写实验（数据现成）→ 再写方法（改进点：动机 → 结构 → 公式）→ 再写理论 → 最后写绪论。目标约 3 万字 + 10 余张图表。</p>
+      </div>
+    </div>
+    <div class="flow-item" data-page-node-id="lbD9QDkw59zvr7GPYLGDU4">
+      <div class="flow-dot" style="background:var(--muted);" data-page-node-id="p9cXi9k0m20qcECj7tmGSx">6</div>
+      <div class="flow-body" data-page-node-id="w5Z8h0YPqEPqQlLe0AH3Hn">
+        <h3 data-page-node-id="aPcbqq9G6Azc6yfQkDjXws">答辩准备 <span class="when" data-page-node-id="qID3yStgwRNV0utPkTFLco">第 15-16 周</span></h3>
+        <p data-page-node-id="P0uCqWnepM2TbqaZHOYmWY">重点预演高频问题：创新点是什么、为什么选 YOLOv8、涨点是否显著、注意力为什么有效（用热力图回答）、能否实际部署（答轻量化方向）。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:22px;" data-page-node-id="uBKTpgNcbvpEJFiEvWvr38">
+    <b data-page-node-id="pt6ESJIGDrKYuHTL3XCO9N">一句话总结整条逻辑：</b>人工巡检跟不上需求（问题）→ 现成模型直接用有"小暗怪偏"四个痛点（原因）→ P2 层、注意力、损失改进、数据增强四项对策（方案）→ 16 周六步验证与成文（执行）。
+  </div>
+</section>
+
+<footer data-page-node-id="Khzn9Xh7pHUqAs7hDtfMmN">
+  数据来源均为下方已发表论文与公开数据集 · 详细论证见同目录《调研报告.md》
+</footer>
+
+<div class="refs">
+  <h2>参考文献与数据来源</h2>
+  <ol>
+    <li>Yang R, Zhang H. Tunnel-YOLO: An improved You Only Look Once algorithm for real-time shield tunnel lining leakage detection. Engineering Applications of Artificial Intelligence, 2025, 162: 112403.（"80%"数据出自该文引言，其原始出处为该文引用的 Wang et al., 2023，属二次引用）<br><span class="doi">doi: 10.1016/j.engappai.2025.112403</span></li>
+    <li>Attention-Enhanced Multi-Task CNN for Subway Tunnel Lining Crack Segmentation and Defect Grading with Lightweight Deployment. Informatica, 2025.（"&lt;70%"出自该文对传统图像方法的对比论述）<br><span class="doi">doi: 10.31449/inf.v49i0.11278</span></li>
+    <li>基于YOLO框架的隧道衬砌表观病害智能识别（LADDNet）. 清华大学学报(自然科学版), 2026.（"病害框宽高集中于归一化尺寸 0.2 以下"出自该文数据集统计分析）<br><span class="doi">doi: 10.16511/j.cnki.qhdxxb.2026.27.014</span></li>
+    <li>隧道墙壁缺陷检测数据集（crack/leak/spalling 三类，3231 张 / 4593 框；crack 800 框、leak 2721 框、spalling 1072 框）. 面包多数据集页 mbd.pub/o/bread/mbd-YZaUlZlyaQ==（"2700+ vs 800"即该数据集官方标注统计，为数据集说明而非论文）</li>
+    <li>周中, 周诗荣, 李世帅, 鲁四平. 基于改进YOLOv7的隧道衬砌内部缺陷智能识别（采用 MPDIoU 损失函数改进）. 铁道学报, 2025(9).</li>
+    <li>Wo F, Du G, et al. Shape-IoU: More Accurate Metric for Bounding Box Regression. 2023. / Tong Z, et al. Wise-IoU (WIoU): Bounding Box Regression Loss with Dynamic Focusing Mechanism. 2023.（WIoU / Shape-IoU 损失函数原始论文）</li>
+    <li>Woo S, Park J, Lee J Y, Kweon I S. CBAM: Convolutional Block Attention Module. ECCV 2018. / Yang L, et al. SimAM: A Simple, Parameter-Free Attention Module for Convolutional Neural Networks. ICML 2021.（注意力机制原始论文）</li>
+    <li>Tan M, Pang R, Le Q V. EfficientDet: Scalable and Efficient Object Detection（BiFPN 特征融合）. CVPR 2020.</li>
+    <li>谭永辉, 李小龙, 曾宏晖. 面向隧道衬砌渗漏识别的深度学习方法综述. 北京测绘, 2024, 38(7): 949-959.（传统检测方法对比部分参考该综述）</li>
+    <li>Jia F, Xue Y-D, Liu J, et al. A self-supervised learning-based method for tunnel leakage defect few-shot recognition and visual explanation. Advanced Engineering Informatics, 2026: 104955.（OpenConstruction Tunnel Leakage 数据集，2351 张）<br><span class="doi">doi: 10.1016/j.aei.2026.104955</span></li>
+    <li>Du W, Xu L, Tie X, et al. Tunnel-YOLO: A New Traffic Vehicle Detection Method Using Feature Enhancement for Complex Tunnel Environments. Transportation Research Record, 2025.（车辆检测版 Tunnel-YOLO，mAP 91.1%）<br><span class="doi">doi: 10.1177/03611981251398755</span></li>
+  </ol>
+  <p class="note-sm">说明：[1] 中"约 80%"为 Tunnel-YOLO（EAAI 2025）引言给出的统计，其原始文献为该文引用的 Wang et al.（2023），使用时建议下载原始文献核对；[4] 为数据集官方说明，非同行评审论文；其余数据均可从对应论文正文直接查到。</p>
+</div>
+
+</div>
+</body>
+</html>

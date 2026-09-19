@@ -1,0 +1,32 @@
+# ===== 虚拟环境（4.8GB，绝不入库）=====
+venv/
+
+# ===== 数据集（约 1.4GB，不入库，见 data/README.md 下载说明）=====
+datasets/
+raw_dataset/
+Leakage.zip
+
+# ===== 预训练权重（可自动下载）与临时文件 =====
+yolov8n.pt
+/weights/
+bus.jpg
+
+# ===== 训练日志（含大量进度条字符，体积大且可重新生成）=====
+*_log.txt
+split_log*.txt
+convert_log.txt
+
+# ===== Python 缓存 =====
+__pycache__/
+*.pyc
+*.pyo
+
+# ===== Ultralytics 运行缓存 =====
+*.cache
+
+# ===== 冒烟测试权重（仅 5 轮验证用，无保留价值）=====
+runs/detect/runs/smoke/weights/
+
+# ===== 系统文件 =====
+Thumbs.db
+.DS_Store

@@ -1,0 +1,9 @@
+# 隧道渗漏检测数据集配置（OpenConstruction Tunnel Leakage Defect Dataset）
+# 单类别：leakage（渗漏），标注由原始多边形转换为检测框
+path: datasets/tunnel
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: leakage
