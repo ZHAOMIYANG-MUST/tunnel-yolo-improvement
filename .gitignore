@@ -30,3 +30,6 @@ runs/detect/runs/smoke/weights/
 # ===== 系统文件 =====
 Thumbs.db
 .DS_Store
+
+# ===== 推送临时日志 =====
+push_log*.txt
