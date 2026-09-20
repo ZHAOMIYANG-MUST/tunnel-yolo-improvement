@@ -24,8 +24,14 @@ __pycache__/
 # ===== Ultralytics 运行缓存 =====
 *.cache
 
-# ===== 冒烟测试权重（仅 5 轮验证用，无保留价值）=====
-runs/detect/runs/smoke/weights/
+# ===== 冒烟测试权重（仅 2 轮验证用，无保留价值）=====
+runs/detect/runs/*smoke*/weights/
+
+# ===== last.pt（每轮末尾权重，论文只用 best.pt，体积减半）=====
+**/weights/last.pt
+
+# ===== 漏检分析的临时逐图可视化（只保留 top_* 精选图）=====
+analysis/missed_cases/_*.jpg
 
 # ===== 系统文件 =====
 Thumbs.db

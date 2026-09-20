@@ -1,0 +1,88 @@
+--- docs/patches/backup/loss.py.orig	2026-09-20 12:42:09.508133600 +0800
++++ venv/Lib/site-packages/ultralytics/utils/loss.py	2026-09-20 12:42:46.451538600 +0800
+@@ -108,6 +108,47 @@
+         ).mean(-1, keepdim=True)
+ 
+ 
++# ===== WIoU v3 support (Tong et al., arXiv:2301.10051) =====
++# Enable via environment variable YOLO_IOU_TYPE=wiou ; default keeps original CIoU.
++import os as _os
++_IOU_TYPE = _os.getenv("YOLO_IOU_TYPE", "ciou").lower()
++_WIOU_ALPHA = float(_os.getenv("WIOU_ALPHA", "1.9"))
++_WIOU_DELTA = float(_os.getenv("WIOU_DELTA", "3.0"))
++_WIOU_MOMENTUM = float(_os.getenv("WIOU_MOMENTUM", "0.1"))
++
++
++def bbox_iou_wiou_v3(pred: torch.Tensor, target: torch.Tensor, iou_mean: torch.Tensor) -> torch.Tensor:
++    """Compute WIoU v3 loss for xyxy boxes (per-box, unweighted).
++
++    L = r * R_WIoU * L_IoU, where R_WIoU = exp(rho2/(cw^2+ch^2)) (normalizer detached),
++    beta = L_IoU / iou_mean (outlier degree, detached), r = beta / (delta * alpha^(beta-delta)).
++    """
++    eps = 1e-7
++    lt = torch.max(pred[:, :2], target[:, :2])
++    rb = torch.min(pred[:, 2:], target[:, 2:])
++    wh = (rb - lt).clamp(min=0)
++    inter = wh[:, 0] * wh[:, 1]
++    area1 = (pred[:, 2] - pred[:, 0]).clamp(min=0) * (pred[:, 3] - pred[:, 1]).clamp(min=0)
++    area2 = (target[:, 2] - target[:, 0]).clamp(min=0) * (target[:, 3] - target[:, 1]).clamp(min=0)
++    union = area1 + area2 - inter + eps
++    iou = inter / union  # gradient flows through pred
++
++    enc_lt = torch.min(pred[:, :2], target[:, :2])
++    enc_rb = torch.max(pred[:, 2:], target[:, 2:])
++    cw = (enc_rb[:, 0] - enc_lt[:, 0]).clamp(min=eps)
++    ch = (enc_rb[:, 1] - enc_lt[:, 1]).clamp(min=eps)
++    pcx, pcy = (pred[:, 0] + pred[:, 2]) / 2, (pred[:, 1] + pred[:, 3]) / 2
++    tcx, tcy = (target[:, 0] + target[:, 2]) / 2, (target[:, 1] + target[:, 3]) / 2
++    rho2 = (pcx - tcx) ** 2 + (pcy - tcy) ** 2
++
++    with torch.no_grad():
++        r_wiou = torch.exp(rho2 / (cw.detach() ** 2 + ch.detach() ** 2))  # R_WIoU
++        l_iou = 1.0 - iou
++        beta = l_iou / iou_mean.clamp(min=eps)  # outlier degree
++        focus = beta / (_WIOU_DELTA * _WIOU_ALPHA ** (beta - _WIOU_DELTA))  # r
++    return focus * r_wiou * l_iou
++
++
+ class BboxLoss(nn.Module):
+     """Criterion class for computing training losses for bounding boxes."""
+ 
+@@ -115,6 +156,8 @@
+         """Initialize the BboxLoss module with regularization maximum and DFL settings."""
+         super().__init__()
+         self.dfl_loss = DFLoss(reg_max) if reg_max > 1 else None
++        if _IOU_TYPE == "wiou":
++            self.register_buffer("iou_mean", torch.tensor(1.0))  # running mean of L_IoU for WIoU v3
+ 
+     def forward(
+         self,
+@@ -131,8 +174,26 @@
+         """Compute IoU and DFL losses for bounding boxes."""
+         fg_mask = fg_mask.nonzero(as_tuple=True)  # index once; long-index gathers and their backward do not sync
+         weight = target_scores[fg_mask].sum(-1, keepdim=True)
+-        iou = bbox_iou(pred_bboxes[fg_mask], target_bboxes[fg_mask], xywh=False, CIoU=True)
+-        loss_iou = ((1.0 - iou) * weight).sum() / target_scores_sum
++        if _IOU_TYPE == "wiou":
++            # WIoU v3: update running mean of L_IoU (EMA, detached), then compute focused loss
++            with torch.no_grad():
++                lt = torch.max(pred_bboxes[fg_mask][:, :2], target_bboxes[fg_mask][:, :2])
++                rb = torch.min(pred_bboxes[fg_mask][:, 2:], target_bboxes[fg_mask][:, 2:])
++                wh = (rb - lt).clamp(min=0)
++                inter = wh[:, 0] * wh[:, 1]
++                a1 = (pred_bboxes[fg_mask][:, 2] - pred_bboxes[fg_mask][:, 0]).clamp(min=0) * (
++                    pred_bboxes[fg_mask][:, 3] - pred_bboxes[fg_mask][:, 1]
++                ).clamp(min=0)
++                a2 = (target_bboxes[fg_mask][:, 2] - target_bboxes[fg_mask][:, 0]).clamp(min=0) * (
++                    target_bboxes[fg_mask][:, 3] - target_bboxes[fg_mask][:, 1]
++                ).clamp(min=0)
++                batch_iou = (inter / (a1 + a2 - inter + 1e-7)).mean()
++                self.iou_mean.mul_(1 - _WIOU_MOMENTUM).add_(_WIOU_MOMENTUM * (1.0 - batch_iou))
++            loss_wiou = bbox_iou_wiou_v3(pred_bboxes[fg_mask], target_bboxes[fg_mask], self.iou_mean)
++            loss_iou = (loss_wiou.unsqueeze(-1) * weight).sum() / target_scores_sum
++        else:
++            iou = bbox_iou(pred_bboxes[fg_mask], target_bboxes[fg_mask], xywh=False, CIoU=True)
++            loss_iou = ((1.0 - iou) * weight).sum() / target_scores_sum
+ 
+         # DFL loss
+         if self.dfl_loss:

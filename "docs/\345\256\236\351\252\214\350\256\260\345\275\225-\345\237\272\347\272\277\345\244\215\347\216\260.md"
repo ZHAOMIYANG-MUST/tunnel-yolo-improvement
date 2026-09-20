@@ -1,0 +1,104 @@
+# 基线复现实验记录
+
+> 项目：基于改进 YOLOv8 的隧道衬砌渗漏检测
+> 本文档记录基线（YOLOv8n）复现的全部过程与结果，作为后续消融实验的对照基准。
+
+---
+
+## 一、实验环境
+
+| 项目 | 配置 |
+|---|---|
+| GPU | NVIDIA GeForce RTX 5060 Laptop GPU（8GB 显存） |
+| 驱动 / CUDA | 573.24 / CUDA 12.8 |
+| Python | 3.13.14（venv：`E:\YOLO\venv`） |
+| PyTorch | 2.11.0+cu128（RTX 50 系必须用 cu128，cu121 不兼容 Blackwell 架构） |
+| Ultralytics | 8.4.155 |
+| 关键训练参数 | epochs=300, imgsz=640, batch=16, seed=42, workers=4 |
+
+## 二、数据集
+
+| 项目 | 说明 |
+|---|---|
+| 数据集 | OpenConstruction Tunnel Leakage Defect Dataset（Jia et al., AEI 2026, doi:10.1016/j.aei.2026.104955） |
+| 规模 | 2351 张图片，2773 个渗漏检测框（单类 leakage） |
+| 原始标注格式 | YOLO 分割多边形（类别 + 归一化轮廓点序列） |
+| 预处理 | 多边形取外接矩形转为检测框（`scripts/polygon_to_bbox.py`，转换后逐文件核验） |
+| 划分 | 8:1:1 → train 1880 / val 235 / test 236（固定随机种子 42，`scripts/split_dataset.py`） |
+| 类别配置 | `configs/tunnel.yaml`，单类 `leakage` |
+
+## 三、冒烟测试（正式训练前验证）
+
+- 配置：与正式训练完全相同，仅 epochs=5
+- 结果：5 轮后 best.pt 在验证集上 P=0.835 / R=0.794 / **mAP50=0.856** / mAP50-95=0.560
+- 结论：数据加载、GPU 训练、指标产出全部正常；损失稳定下降，数据质量良好
+- 训练速度：约 22 秒/轮 → 300 轮预计约 2 小时
+
+## 四、正式基线训练结果（YOLOv8n, 300 epochs）
+
+**训练耗时 1.78 小时（2026-09-19），300 轮全部完成，无中断。**
+
+### 验证集结果（best.pt 最终验证，235 张图 / 273 框）
+
+| 指标 | 数值 |
+|---|---|
+| Precision | 0.909 |
+| Recall | 0.929 |
+| mAP@0.5 | **0.947** |
+| mAP@0.5:0.95 | **0.726** |
+
+### 测试集结果（未参与训练的 236 张图 / 263 框，独立评估）
+
+| 指标 | 数值 |
+|---|---|
+| Precision | 0.871 |
+| Recall | 0.928 |
+| mAP@0.5 | **0.929** |
+| mAP@0.5:0.95 | **0.723** |
+| 推理速度 | 5.0 ms/张（约 200 FPS） |
+
+### 模型规格
+
+| 项目 | 数值 |
+|---|---|
+| 参数量 | 3,011,043（未融合）/ 3,005,843（融合后） |
+| GFLOPs | 8.2（未融合）/ 8.1（融合后） |
+| 权重文件 | best.pt 6.3MB |
+
+> 参数量说明：训练日志里同时出现两个数——`summary` 是未融合模型（3,011,043），`summary (fused)` 是推理时把 Conv+BN 融合后的模型（3,005,843，BN 参数被吸收所以更少）。**消融实验统一采用未融合口径**（后续改进的参数量增量按同一口径计算）。
+
+> ✅ **基线复现结论**：模型收敛正常（训练后期 box_loss≈0.35、cls_loss≈0.24），测试集 mAP50=0.929 与验证集 0.947 一致性好、无明显过拟合。此表即为后续消融实验的**第 1 行基准数据**。
+
+产物路径（实际位置，注意 runs 下有 detect/runs 两层目录）：
+- 最优权重：`runs/detect/runs/baseline/weights/best.pt`
+- 训练曲线：`runs/detect/runs/baseline/results.png`、`results.csv`（300 行逐轮指标）
+- PR / F1 曲线：`runs/detect/runs/baseline/BoxPR_curve.png`、`BoxF1_curve.png`
+- 混淆矩阵：`runs/detect/runs/baseline/confusion_matrix.png`（及 normalized 版）
+- 训练/验证批可视化：`train_batch*.jpg`、`val_batch*_labels/pred.jpg`
+- 测试集评估产物：`runs/detect/runs/baseline_test/`
+- 完整训练日志：`baseline_log.txt`（根目录）
+
+## 五、复现步骤（从零开始）
+
+```bash
+# 1. 激活环境
+E:\YOLO\venv\Scripts\activate
+
+# 2. 划分数据集（已执行过，重跑需先删 datasets/tunnel）
+python scripts/split_dataset.py
+
+# 3. 训练
+yolo detect train data=configs/tunnel.yaml model=yolov8n.pt epochs=300 imgsz=640 batch=16 device=0 workers=4 seed=42 project=runs name=baseline
+
+# 4. 在测试集上评估
+yolo detect val model=runs/detect/runs/baseline/weights/best.pt data=configs/tunnel.yaml split=test
+```
+
+## 六、注意事项 / 已踩的坑
+
+1. **RTX 50 系（Blackwell）必须装 cu128 版 PyTorch**，装 cu121 会报 GPU 不支持
+2. **数据集原始标注是多边形不是检测框**，必须先跑 `scripts/polygon_to_bbox.py`
+3. **中文 print 在 GBK 控制台会让脚本崩溃**，跑脚本时加 `PYTHONIOENCODING=utf-8`
+4. 所有实验固定 seed=42；后续改进实验除改动模块外，其余超参必须与本基线完全一致
+5. **划分脚本复制曾因控制台编码中断过一次**（val 少 10 张、test 未生成）——划分逻辑是确定性的（按文件名排序切片），重跑脚本即可补齐，不影响已有划分的正确性
+6. ultralytics CLI 的 `project=runs name=baseline` 实际输出到 `runs/detect/runs/baseline/`（自动加 detect 层），引用产物路径时注意
